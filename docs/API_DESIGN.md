@@ -17,8 +17,7 @@ Registers a new user.
 "password": "Pass1234!"
 }
 
-shell
-Copy code
+
 
 #### Response
 {
@@ -27,8 +26,7 @@ Copy code
 "email": "raj@example.com"
 }
 
-yaml
-Copy code
+
 
 #### Errors
 
@@ -48,8 +46,7 @@ Authenticates a user and returns JWT tokens.
 "password": "Pass1234!"
 }
 
-shell
-Copy code
+
 
 #### Response
 {
@@ -57,8 +54,7 @@ Copy code
 "refresh": "<jwt-refresh-token>"
 }
 
-yaml
-Copy code
+
 
 #### Errors
 
@@ -81,8 +77,7 @@ Creates a new sweet (Admin only).
 "quantity": 50
 }
 
-shell
-Copy code
+
 
 #### Response
 {
@@ -93,8 +88,7 @@ Copy code
 "quantity": 50
 }
 
-pgsql
-Copy code
+
 
 #### Errors
 
@@ -129,8 +123,7 @@ Returns all sweets.
 }
 ]
 
-yaml
-Copy code
+
 
 ---
 
@@ -146,8 +139,7 @@ Returns a specific sweet.
 "quantity": 100
 }
 
-yaml
-Copy code
+
 
 #### Errors
 
@@ -167,8 +159,6 @@ Updates a sweet (Admin only).
 "quantity": 40
 }
 
-shell
-Copy code
 
 #### Response
 {
@@ -178,8 +168,6 @@ Copy code
 "quantity": 40
 }
 
-yaml
-Copy code
 
 #### Errors
 
@@ -196,8 +184,6 @@ Deletes a sweet (Admin only).
 #### Response
 204 No Content
 
-yaml
-Copy code
 
 #### Errors
 
@@ -220,8 +206,6 @@ Purchases one unit of a sweet.
 "quantity": 99
 }
 
-yaml
-Copy code
 
 #### Errors
 
@@ -240,18 +224,12 @@ Restocks a sweet (Admin only).
 "amount": 20
 }
 
-shell
-Copy code
-
 #### Response
 {
 "id": 1,
 "name": "Barfi",
 "quantity": 140
 }
-
-yaml
-Copy code
 
 #### Errors
 
@@ -288,17 +266,8 @@ All errors use the following structure:
 "detail": "Error message here"
 }
 
-makefile
-Copy code
-
 Examples:
 { "detail": "Invalid credentials" }
 { "detail": "Sweet not found" }
 { "detail": "Permission denied" }
 
-yaml
-Copy code
-
----
-
-# End of API Design Document

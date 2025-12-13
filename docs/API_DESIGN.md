@@ -1,228 +1,304 @@
-🟩 1. Authentication Endpoints
-POST /api/auth/register
+# Sweet Shop Management System — API Design
 
-Create a new user.
+This document defines the REST API contract for the Sweet Shop Management System.  
+It is created before backend implementation to support Test-Driven Development (TDD).
 
-Request:
+---
+
+## 1. Authentication Endpoints
+
+### 1.1 POST /api/auth/register
+Registers a new user.
+
+#### Request
 {
-  "username": "raj",
-  "email": "raj@example.com",
-  "password": "Pass1234!"
+"username": "raj",
+"email": "raj@example.com",
+"password": "Pass1234!"
 }
 
-Response:
+shell
+Copy code
+
+#### Response
 {
-  "id": 1,
-  "username": "raj",
-  "email": "raj@example.com"
+"id": 1,
+"username": "raj",
+"email": "raj@example.com"
 }
 
-Errors:
+yaml
+Copy code
 
-400: username/email already exists
+#### Errors
 
-400: invalid password
+| Status | Description |
+|--------|-------------|
+| 400 | Username or email already exists |
+| 400 | Invalid password format |
 
+---
 
+### 1.2 POST /api/auth/login
+Authenticates a user and returns JWT tokens.
 
-POST /api/auth/login
-
-Login user and return JWT tokens.
-
-Request:
+#### Request
 {
-  "username": "raj",
-  "password": "Pass1234!"
+"username": "raj",
+"password": "Pass1234!"
 }
 
-Response:
+shell
+Copy code
+
+#### Response
 {
-  "access": "<jwt-access-token>",
-  "refresh": "<jwt-refresh-token>"
+"access": "<jwt-access-token>",
+"refresh": "<jwt-refresh-token>"
 }
 
-Errors:
+yaml
+Copy code
 
-401: invalid credentials
+#### Errors
 
+| Status | Description |
+|--------|-------------|
+| 401 | Invalid credentials |
 
+---
 
-🟩 2. Sweets Endpoints (CRUD + Search)
-POST /api/sweets/
+## 2. Sweets Endpoints (CRUD + Search)
 
-Create a new sweet (admin only)
+### 2.1 POST /api/sweets/
+Creates a new sweet (Admin only).
 
-Request:
+#### Request
 {
-  "name": "Gulab Jamun",
-  "category": "Traditional",
-  "price": 20.5,
-  "quantity": 50
+"name": "Gulab Jamun",
+"category": "Traditional",
+"price": 20.5,
+"quantity": 50
 }
 
-Response:
+shell
+Copy code
+
+#### Response
 {
-  "id": 1,
-  "name": "Gulab Jamun",
-  "category": "Traditional",
-  "price": 20.5,
-  "quantity": 50
+"id": 1,
+"name": "Gulab Jamun",
+"category": "Traditional",
+"price": 20.5,
+"quantity": 50
 }
 
-Errors:
+pgsql
+Copy code
 
-400: name already exists
+#### Errors
 
-400: invalid price or quantity
+| Status | Description |
+|--------|-------------|
+| 400 | Name already exists |
+| 400 | Invalid price or quantity |
+| 403 | User is not an admin |
 
-403: user is not admin
+---
 
+### 2.2 GET /api/sweets/
+Returns all sweets.
 
-GET /api/sweets/
+#### Optional Query Parameters
 
-List all sweets.
+| Parameter | Example | Purpose |
+|-----------|---------|---------|
+| category | Traditional | Filter by category |
+| min_price | 10 | Minimum price |
+| max_price | 50 | Maximum price |
+| name | jam | Case-insensitive search |
 
-Query Parameters (optional):
-
-category=Traditional
-
-min_price=10
-
-max_price=50
-
-name=jam
-
-Response:
+#### Response
 [
-  {
-    "id": 1,
-    "name": "Barfi",
-    "category": "Traditional",
-    "price": 30,
-    "quantity": 100
-  }
+{
+"id": 1,
+"name": "Barfi",
+"category": "Traditional",
+"price": 30,
+"quantity": 100
+}
 ]
 
+yaml
+Copy code
 
-GET /api/sweets/:id
+---
 
-Get one sweet by ID.
+### 2.3 GET /api/sweets/:id
+Returns a specific sweet.
 
-Example:
-GET /api/sweets/1
-
-Response:
+#### Response
 {
-  "id": 1,
-  "name": "Barfi",
-  "category": "Traditional",
-  "price": 30,
-  "quantity": 100
+"id": 1,
+"name": "Barfi",
+"category": "Traditional",
+"price": 30,
+"quantity": 100
 }
 
+yaml
+Copy code
 
-PUT /api/sweets/:id
+#### Errors
 
-Update sweet details (admin only)
+| Status | Description |
+|--------|-------------|
+| 404 | Sweet not found |
 
-Request:
+---
+
+### 2.4 PUT /api/sweets/:id
+Updates a sweet (Admin only).
+
+#### Request
 {
-  "name": "New Name",
-  "price": 25.0,
-  "quantity": 40
+"name": "New Name",
+"price": 25.0,
+"quantity": 40
 }
 
-Response:
+shell
+Copy code
+
+#### Response
 {
-  "id": 1,
-  "name": "New Name",
-  "price": 25.0,
-  "quantity": 40
+"id": 1,
+"name": "New Name",
+"price": 25.0,
+"quantity": 40
 }
 
-Errors:
+yaml
+Copy code
 
-403: user not admin
+#### Errors
 
-404: sweet not found
+| Status | Description |
+|--------|-------------|
+| 403 | User is not an admin |
+| 404 | Sweet not found |
 
+---
 
+### 2.5 DELETE /api/sweets/:id
+Deletes a sweet (Admin only).
 
-DELETE /api/sweets/:id
-
-Delete sweet (admin only)
-
-Response:
+#### Response
 204 No Content
 
+yaml
+Copy code
 
-🟩 3. Inventory Endpoints (Purchase + Restock)
-POST /api/sweets/:id/purchase
+#### Errors
 
-Purchase 1 unit of a sweet.
+| Status | Description |
+|--------|-------------|
+| 403 | User is not an admin |
+| 404 | Sweet not found |
 
-Response:
+---
+
+## 3. Inventory Endpoints (Purchase + Restock)
+
+### 3.1 POST /api/sweets/:id/purchase
+Purchases one unit of a sweet.
+
+#### Response
 {
-  "id": 1,
-  "name": "Barfi",
-  "quantity": 99
+"id": 1,
+"name": "Barfi",
+"quantity": 99
 }
 
-Errors:
+yaml
+Copy code
 
-400: out of stock
+#### Errors
 
-404: sweet not found
+| Status | Description |
+|--------|-------------|
+| 400 | Out of stock |
+| 404 | Sweet not found |
 
-POST /api/sweets/:id/restock
+---
 
-Restock sweet (admin only)
+### 3.2 POST /api/sweets/:id/restock
+Restocks a sweet (Admin only).
 
-Request:
+#### Request
 {
-  "amount": 20
+"amount": 20
 }
 
-Response:
+shell
+Copy code
+
+#### Response
 {
-  "id": 1,
-  "name": "Barfi",
-  "quantity": 140
+"id": 1,
+"name": "Barfi",
+"quantity": 140
 }
 
-Errors:
+yaml
+Copy code
 
-400: invalid amount
+#### Errors
 
-403: user not admin
+| Status | Description |
+|--------|-------------|
+| 400 | Invalid restock amount |
+| 403 | User is not an admin |
+| 404 | Sweet not found |
 
+---
 
-🟩 4. User Roles
+## 4. User Roles
 
-Inside Django:
+### Normal User Can:
+- View sweets
+- Search sweets
+- Purchase sweets
 
-is_staff = True → Admin
+### Admin User Can:
+- Add sweets
+- Update sweets
+- Delete sweets
+- Restock sweets
 
-Normal users → can only:
+(Admin = is_staff = True)
 
-view sweets
+---
 
-purchase sweets
+## 5. Error Response Format
 
-Admins can:
-
-add sweets
-
-update sweets
-
-delete sweets
-
-restock sweets
-
-🟩 5. Error Response Format (consistent)
-
-All errors should follow:
+All errors use the following structure:
 
 {
-  "detail": "Error message here"
+"detail": "Error message here"
 }
+
+makefile
+Copy code
+
+Examples:
+{ "detail": "Invalid credentials" }
+{ "detail": "Sweet not found" }
+{ "detail": "Permission denied" }
+
+yaml
+Copy code
+
+---
+
+# End of API Design Document

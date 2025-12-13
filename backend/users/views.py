@@ -25,4 +25,4 @@ class RegisterView(generics.CreateAPIView):
             return Response(
                 {"detail": "Username or email already exists"},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )    

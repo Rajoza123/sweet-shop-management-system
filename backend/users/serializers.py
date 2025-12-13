@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import AuthenticationFailed
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -26,15 +27,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        username = data.get("username")
-        password = data.get("password")
+        user = authenticate(
+            username=data.get("username"),
+            password=data.get("password")
+        )
 
-        user = authenticate(username=username, password=password)
         if not user:
-            raise serializers.ValidationError("Invalid credentials")
+            raise AuthenticationFailed("Invalid credentials")
 
         refresh = RefreshToken.for_user(user)
 

@@ -32,15 +32,7 @@ class LoginView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        try:
-            serializer.is_valid(raise_exception=True)
-            tokens = serializer.validated_data
-
-            return Response(tokens, status=status.HTTP_200_OK)
-
-        except Exception:
-            return Response(
-                {"detail": "Invalid credentials"},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        # serializer.validated_data already contains access & refresh tokens
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)

@@ -47,7 +47,7 @@ class TestSweetCreateAPI:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["name"] == payload["name"]
         assert response.data["category"] == payload["category"]
-        assert response.data["price"] == payload["price"]
+        assert float(response.data["price"]) == payload["price"]
         assert response.data["quantity"] == payload["quantity"]
 
     def test_create_sweet_non_admin_forbidden(self):

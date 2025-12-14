@@ -15,7 +15,7 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from .services import restock_sweet
 
-from .services import purchase_sweet
+from .services import purchase_sweet , update_sweet
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
@@ -82,7 +82,19 @@ class SweetDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Sweet.objects.all()
-class SweetUpdateView(generics.UpdateAPIView):
-    queryset = Sweet.objects.all()
-    serializer_class = SweetSerializer
+class SweetUpdateView(APIView):
     permission_classes = [IsAdminUser]
+
+    def put(self, request, pk):
+        try:
+            sweet = update_sweet(pk, request.data)
+        except ValidationError as e:
+            return Response(
+                {"detail": str(e.detail[0])},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception:
+            raise Http404
+
+        serializer = SweetSerializer(sweet)
+        return Response(serializer.data, status=status.HTTP_200_OK)

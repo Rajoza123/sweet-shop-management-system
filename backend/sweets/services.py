@@ -34,3 +34,19 @@ def restock_sweet(sweet_id, amount):
     sweet.save()
 
     return sweet
+
+@transaction.atomic
+def update_sweet(sweet_id, data):
+    sweet = Sweet.objects.select_for_update().filter(id=sweet_id).first()
+
+    if not sweet:
+        raise Sweet.DoesNotExist
+
+    for field in ["name", "category", "price", "quantity"]:
+        if field in data:
+            setattr(sweet, field, data[field])
+
+    sweet.full_clean()
+    sweet.save()
+
+    return sweet

@@ -5,6 +5,14 @@ from .serializers import SweetSerializer
 from .filters import SweetFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from django.http import Http404
+from rest_framework.exceptions import ValidationError
+
+from .services import purchase_sweet
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
@@ -16,3 +24,23 @@ class SweetListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = SweetFilter
     search_fields = ["name"]
+class SweetPurchaseView(APIView):
+    def post(self, request, pk):
+        try:
+            sweet = purchase_sweet(pk)
+        except ValidationError as e:
+            return Response(
+                {"detail": str(e.detail[0])},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception:
+            raise Http404
+
+        return Response(
+            {
+                "id": sweet.id,
+                "name": sweet.name,
+                "quantity": sweet.quantity
+            },
+            status=status.HTTP_200_OK
+        )

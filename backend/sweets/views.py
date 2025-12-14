@@ -12,6 +12,9 @@ from rest_framework import status
 from django.http import Http404
 from rest_framework.exceptions import ValidationError
 
+from django.shortcuts import get_object_or_404
+
+
 from .services import purchase_sweet
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
@@ -35,6 +38,39 @@ class SweetPurchaseView(APIView):
             )
         except Exception:
             raise Http404
+
+        return Response(
+            {
+                "id": sweet.id,
+                "name": sweet.name,
+                "quantity": sweet.quantity
+            },
+            status=status.HTTP_200_OK
+        )
+class SweetRestockView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, pk):
+        sweet = get_object_or_404(Sweet, pk=pk)
+
+        amount = request.data.get("amount")
+
+        try:
+            amount = int(amount)
+        except (TypeError, ValueError):
+            return Response(
+                {"detail": "Invalid amount"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if amount <= 0:
+            return Response(
+                {"detail": "Amount must be greater than zero"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        sweet.quantity += amount
+        sweet.save()
 
         return Response(
             {

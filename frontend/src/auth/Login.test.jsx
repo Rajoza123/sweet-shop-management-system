@@ -1,10 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import Login from "../pages/Login";
-
+import React from "react";
 describe("Login Page", () => {
   test("renders login heading", () => {
     render(<Login />);
-    expect(screen.getByText(/login/i)).toBeInTheDocument();
+    expect(
+  screen.getByRole("heading", { name: /login/i })
+).toBeInTheDocument();
   });
 
   test("renders username and password inputs", () => {

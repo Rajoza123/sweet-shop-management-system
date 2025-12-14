@@ -77,6 +77,8 @@ class SweetRestockView(APIView):
         )
         
 class SweetDetailView(generics.RetrieveAPIView):
-    queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Sweet.objects.all()

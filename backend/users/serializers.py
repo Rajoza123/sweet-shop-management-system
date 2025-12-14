@@ -33,7 +33,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data.get("email"),
             password=validated_data["password"]
         )
-<<<<<<< HEAD
         return user
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -54,5 +53,3 @@ class LoginSerializer(serializers.Serializer):
             "access": str(refresh.access_token),
             "refresh": str(refresh),
         }
-=======
->>>>>>> dda0c2d624b488fb7c88d48f24fed956f644f27e

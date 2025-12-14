@@ -1,15 +1,12 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-<<<<<<< HEAD
 from .serializers import RegisterSerializer , LoginSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.db import IntegrityError
 
 User = get_user_model()
-=======
 from .serializers import RegisterSerializer
->>>>>>> dda0c2d624b488fb7c88d48f24fed956f644f27e
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -19,7 +16,6 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-<<<<<<< HEAD
         try:
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
@@ -43,10 +39,8 @@ class LoginView(generics.GenericAPIView):
 
         # serializer.validated_data already contains access & refresh tokens
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
-=======
         return Response({
             "id": user.id,
             "username": user.username,
             "email": user.email
         }, status=status.HTTP_201_CREATED)
->>>>>>> dda0c2d624b488fb7c88d48f24fed956f644f27e

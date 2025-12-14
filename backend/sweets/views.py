@@ -15,7 +15,7 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from .services import restock_sweet
 
-from .services import purchase_sweet , update_sweet
+from .services import purchase_sweet , update_sweet ,delete_sweet
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
@@ -103,3 +103,13 @@ class SweetUpdateView(APIView):
 
         serializer = SweetSerializer(sweet)
         return Response(serializer.data, status=status.HTTP_200_OK)
+class SweetDeleteView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def delete(self, request, pk):
+        try:
+            delete_sweet(pk)
+        except Sweet.DoesNotExist:
+            raise Http404
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

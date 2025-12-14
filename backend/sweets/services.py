@@ -55,3 +55,12 @@ def update_sweet(sweet_id, data):
 
     sweet.save()
     return sweet
+
+@transaction.atomic
+def delete_sweet(sweet_id):
+    sweet = Sweet.objects.select_for_update().filter(id=sweet_id).first()
+
+    if not sweet:
+        raise Sweet.DoesNotExist
+
+    sweet.delete()

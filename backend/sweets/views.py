@@ -9,7 +9,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.shortcuts import get_object_or_404
+from django.http import Http404
+from rest_framework.exceptions import ValidationError
+
+from .services import purchase_sweet
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
@@ -23,16 +26,15 @@ class SweetListView(generics.ListAPIView):
     search_fields = ["name"]
 class SweetPurchaseView(APIView):
     def post(self, request, pk):
-        sweet = get_object_or_404(Sweet, pk=pk)
-
-        if sweet.quantity <= 0:
+        try:
+            sweet = purchase_sweet(pk)
+        except ValidationError as e:
             return Response(
-                {"detail": "Out of stock"},
+                {"detail": str(e.detail[0])},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        sweet.quantity -= 1
-        sweet.save()
+        except Exception:
+            raise Http404
 
         return Response(
             {

@@ -103,3 +103,6 @@ class SweetUpdateView(APIView):
 
         serializer = SweetSerializer(sweet)
         return Response(serializer.data, status=status.HTTP_200_OK)
+class SweetDeleteView(generics.DestroyAPIView):
+    queryset = Sweet.objects.all()
+    permission_classes = [IsAdminUser]

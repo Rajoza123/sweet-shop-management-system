@@ -33,7 +33,7 @@ class SweetPurchaseView(APIView):
             sweet = purchase_sweet(pk)
         except ValidationError as e:
             return Response(
-                {"detail": str(e.detail[0])},
+                e.detail,
                 status=status.HTTP_400_BAD_REQUEST
             )
         except Exception:
@@ -90,7 +90,7 @@ class SweetUpdateView(APIView):
             sweet = update_sweet(pk, request.data)
         except ValidationError as e:
             return Response(
-                {"detail": str(e.detail[0])},
+                e.detail,
                 status=status.HTTP_400_BAD_REQUEST
             )
         except Exception:

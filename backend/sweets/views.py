@@ -2,32 +2,17 @@ from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 from .models import Sweet
 from .serializers import SweetSerializer
-
+from .filters import SweetFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 class SweetCreateView(generics.CreateAPIView):
     queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
     permission_classes = [IsAdminUser]
 class SweetListView(generics.ListAPIView):
+    queryset = Sweet.objects.all()
     serializer_class = SweetSerializer
 
-    def get_queryset(self):
-        queryset = Sweet.objects.all()
-
-        category = self.request.query_params.get("category")
-        min_price = self.request.query_params.get("min_price")
-        max_price = self.request.query_params.get("max_price")
-        name = self.request.query_params.get("name")
-
-        if category:
-            queryset = queryset.filter(category=category)
-
-        if min_price:
-            queryset = queryset.filter(price__gte=min_price)
-
-        if max_price:
-            queryset = queryset.filter(price__lte=max_price)
-
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        return queryset
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = SweetFilter
+    search_fields = ["name"]

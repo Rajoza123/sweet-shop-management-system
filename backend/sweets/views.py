@@ -8,7 +8,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from rest_framework.exceptions import ValidationError
 
@@ -75,3 +75,10 @@ class SweetRestockView(APIView):
             },
             status=status.HTTP_200_OK
         )
+        
+class SweetDetailView(generics.RetrieveAPIView):
+    serializer_class = SweetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Sweet.objects.all()

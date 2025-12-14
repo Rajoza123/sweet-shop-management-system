@@ -1,6 +1,8 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from .models import Sweet
 
@@ -46,7 +48,10 @@ def update_sweet(sweet_id, data):
         if field in data:
             setattr(sweet, field, data[field])
 
-    sweet.full_clean()
-    sweet.save()
+    try:
+        sweet.full_clean()
+    except DjangoValidationError as e:
+        raise DRFValidationError(e.message_dict)
 
+    sweet.save()
     return sweet

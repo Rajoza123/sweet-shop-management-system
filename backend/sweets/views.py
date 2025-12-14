@@ -32,9 +32,14 @@ class SweetPurchaseView(APIView):
         try:
             sweet = purchase_sweet(pk)
         except ValidationError as e:
+            message = (
+                    e.detail[0]
+                    if isinstance(e.detail, list)
+                    else e.detail
+                )
             return Response(
-                e.detail,
-                status=status.HTTP_400_BAD_REQUEST
+                {"detail": message},
+        status=status.HTTP_400_BAD_REQUEST
             )
         except Exception:
             raise Http404

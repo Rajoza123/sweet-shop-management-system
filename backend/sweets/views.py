@@ -82,3 +82,7 @@ class SweetDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Sweet.objects.all()
+class SweetUpdateView(generics.UpdateAPIView):
+    queryset = Sweet.objects.all()
+    serializer_class = SweetSerializer
+    permission_classes = [IsAdminUser]

@@ -1,4 +1,3 @@
-}
 
 # 🍬 Sweet Shop Management System
 

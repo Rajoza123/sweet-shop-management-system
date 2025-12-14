@@ -72,7 +72,7 @@ class TestSweetListAPI:
         assert len(response.data) == 2
 
     def test_search_by_name(self):
-        response = self.client.get(self.url, {"name": "bar"})
+        response = self.client.get(self.url, {"search": "bar"})
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 1

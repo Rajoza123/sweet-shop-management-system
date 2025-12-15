@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 export default function Login() {
@@ -13,9 +14,13 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // API integration will come later (next feature)
+
+    await axios.post("http://127.0.0.1:8000/api/auth/login/", {
+      username: form.username,
+      password: form.password,
+    });
   };
 
   return (
@@ -25,52 +30,27 @@ export default function Login() {
           Login
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-          aria-label="login-form"
-        >
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              placeholder="Username"
-              value={form.username}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <input
+            name="username"
+            placeholder="Username"
+            value={form.username}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg"
+          />
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg"
+          />
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg"
           >
             Login
           </button>

@@ -118,7 +118,4 @@ def get_queryset(self):
     queryset = Sweet.objects.all()
     max_price = self.request.query_params.get("max_price")
 
-    if max_price:
-        queryset = queryset.filter(price__lt=max_price)
-
-    return queryset
+    return queryset.filter(price__lt=max_price) if max_price else queryset

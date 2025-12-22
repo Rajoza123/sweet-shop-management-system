@@ -113,3 +113,9 @@ class SweetDeleteView(APIView):
             raise Http404
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+def get_queryset(self):
+    queryset = Sweet.objects.all()
+    max_price = self.request.query_params.get("max_price")
+
+    return queryset.filter(price__lt=max_price) if max_price else queryset

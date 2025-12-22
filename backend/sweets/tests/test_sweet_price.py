@@ -25,9 +25,9 @@ class TestSweetListFilter:
             quantity=5
         )
 
-    def test_list_sweets_price_less_than_100(self):
+    def test_list_sweets_filtered_by_max_price(self):
         response = self.client.get(self.url, {"max_price": 100})
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 1
-        assert response.data[0]["price"] < 100
+        assert float(response.data[0]["price"]) < 100

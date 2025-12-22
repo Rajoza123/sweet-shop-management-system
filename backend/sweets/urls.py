@@ -9,5 +9,5 @@ urlpatterns = [
     path("<int:pk>/", SweetDetailView.as_view(), name="sweet-detail"),
     path("<int:pk>/update/", SweetUpdateView.as_view(), name="sweet-update"),
     path("<int:pk>/delete/", SweetDeleteView.as_view(), name="sweet-delete"),
-
+    path("", SweetListView.as_view(), name="sweet-list"),
 ]
